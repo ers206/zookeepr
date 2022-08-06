@@ -7,6 +7,19 @@ const app = express();
 app.use(express.urlencoded({ extended: true }));
 // parse incoming JSON data
 app.use(express.json());
+// added css and js by creating path to public folder
+app.use(express.static('public'));
+// when endpoint has api in it we assume it has json DataTransfer. without api it should serve an html page 
+app.get('/animals', (req, res) => {
+    res.sendFile(path.join(__dirname, './public/animals.html'));
+  });
+app.get('/zookeepers', (req, res) => {
+    res.sendFile(path.join(__dirname, './public/zookeepers.html'));
+  });
+//   * is a wild card it will direct back to homepage if it receives a request to page that doesnt exist  /about, /contact *route should always come last
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, './public/index.html'));
+  });
 const { animals } = require('./data/animals');
 
 
@@ -109,6 +122,11 @@ app.post('/api/animals', (req, res) => {
     res.json(animal);
   }
 });
+
+// route used to create homepage for a server 11.3.4
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, './public/index.html'));
+  });
 
 app.listen(PORT, () => {
     console.log(`API server now on port ${PORT}!`);
